@@ -1,45 +1,74 @@
 body {
-  text-align: center;
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  transition: 0.3s;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: url("background.jpg") center/cover no-repeat fixed;
+  min-height: 100vh;
 }
 
-/* Light & Dark */
-body.light { background: #f4f4f4; color: #000; }
-body.dark { background: #121212; color: #fff; }
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+body.light { color: #000; }
+body.dark { color: #fff; }
+
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
 
 .logo { width: 120px; margin-top: 20px; }
 
-#shopName { font-size: 28px; margin: 10px 0; font-weight: bold; color: #333; }
+#shopName { font-size: 28px; font-weight: bold; }
 
-.card {
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 420px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  backdrop-filter: blur(10px);
+#statusIcon {
+  font-size: 80px;
+  margin: 15px;
+  transition: 0.3s;
 }
 
-#statusIcon { font-size: 80px; margin: 20px auto; display: inline-block; transition: 0.3s; }
+/* NEON PULSE */
+@keyframes neonPulse {
+  0% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
+  50% { transform: scale(1.2); text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+  100% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
+}
 
-button, input {
-  padding: 10px 14px;
+.pulse {
+  animation: neonPulse 1s infinite;
+}
+
+.loginBox input { width: 80%; padding: 10px; margin-bottom: 10px; }
+
+button {
+  padding: 10px;
   margin: 6px;
-  font-size: 16px;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-button { background: linear-gradient(135deg, #00c853, #64dd17); font-weight: bold; }
-button.close { background: linear-gradient(135deg, #ff5252, #ff1744); color: #fff; }
-button.today { background: linear-gradient(135deg, #ff9100, #ff6d00); }
-button.reset { background: linear-gradient(135deg, #2979ff, #00b0ff); color: #fff; }
+button { background: #4caf50; color: #fff; }
+button.close { background: #f44336; }
+button.today { background: #ff9800; }
+button.reset { background: #2196f3; }
+.darkBtn { background: #555; }
 
-button:hover { opacity: 0.85; }
+#adminPanel {
+  display: none;
+  margin-top: 15px;
+  background: rgba(255,255,255,0.15);
+  padding: 15px;
+  border-radius: 10px;
+}
 
-@media (max-width: 600px) { button, input { width: 90%; } }
+ul { list-style: none; padding: 0; font-size: 14px; }
+
+@media (max-width: 600px) { .container { width: 95%; } }
