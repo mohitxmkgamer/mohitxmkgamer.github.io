@@ -1,9 +1,21 @@
 const openHour = 10;
 const closeHour = 21;
+const OWNER_PASSWORD = "1234"; // 🔑 change this
+
+// Holidays (YYYY-MM-DD)
+const holidays = [
+  "2026-01-26",
+  "2026-03-08"
+];
 
 const light = document.getElementById("statusLight");
 const text = document.getElementById("statusText");
-const time = document.getElementById("timeText");
+const timeText = document.getElementById("timeText");
+const controls = document.getElementById("controls");
+
+function todayDate() {
+  return new Date().toISOString().split("T")[0];
+}
 
 function formatTime(h) {
   const ampm = h >= 12 ? "PM" : "AM";
@@ -11,18 +23,28 @@ function formatTime(h) {
   return h + ":00 " + ampm;
 }
 
+function unlockControls() {
+  const pass = prompt("Enter owner password:");
+  if (pass === OWNER_PASSWORD) {
+    controls.style.display = "block";
+    alert("Controls unlocked");
+  } else {
+    alert("Wrong password");
+  }
+}
+
 function setOpen() {
-  localStorage.setItem("status", "open");
+  localStorage.setItem("manualStatus", "open");
   updateUI();
 }
 
 function setClosed() {
-  localStorage.setItem("status", "closed");
+  localStorage.setItem("manualStatus", "closed");
   updateUI();
 }
 
 function setClosedToday() {
-  localStorage.setItem("status", "closedToday");
+  localStorage.setItem("manualStatus", "closedToday");
   updateUI();
 }
 
@@ -32,24 +54,40 @@ function toggleDark() {
 }
 
 function updateUI() {
-  const status = localStorage.getItem("status");
   const now = new Date();
   const hour = now.getHours();
+  const manualStatus = localStorage.getItem("manualStatus");
+  const today = todayDate();
 
-  if (status === "open") {
+  if (holidays.includes(today)) {
+    light.style.background = "orange";
+    text.innerText = "HOLIDAY";
+    timeText.innerText = "Shop closed today";
+    return;
+  }
+
+  if (manualStatus === "open") {
     light.style.background = "green";
     text.innerText = "SHOP IS OPEN";
-    time.innerText = `Open till ${formatTime(closeHour)}`;
+    timeText.innerText = `Open till ${formatTime(closeHour)}`;
+    return;
   }
-  else if (status === "closedToday") {
+
+  if (manualStatus === "closedToday") {
     light.style.background = "orange";
     text.innerText = "CLOSED TODAY";
-    time.innerText = "See you tomorrow!";
+    timeText.innerText = "See you tomorrow";
+    return;
   }
-  else {
+
+  if (hour >= openHour && hour < closeHour) {
+    light.style.background = "green";
+    text.innerText = "SHOP IS OPEN";
+    timeText.innerText = `Open till ${formatTime(closeHour)}`;
+  } else {
     light.style.background = "red";
     text.innerText = "SHOP IS CLOSED";
-    time.innerText = `Opens at ${formatTime(openHour)}`;
+    timeText.innerText = `Opens at ${formatTime(openHour)}`;
   }
 }
 
