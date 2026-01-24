@@ -1,108 +1,93 @@
-const OWNER_PASSWORD = "1234"; // change this
+let manualOverride = false;
+let closedToday = false;
 
-// Weekly schedule
-const schedule = {
-  0: null,            // Sunday closed
-  1: [10,21],
-  2: [10,21],
-  3: [10,21],
-  4: [10,21],
-  5: [10,21],
-  6: [10,21]
-};
+const OPEN_TIME = 10;   // 10 AM
+const CLOSE_TIME = 21; // 9 PM
 
-// Holidays
-const holidays = ["2026-01-26"];
+const statusText = document.getElementById("statusText");
+const statusLight = document.getElementById("statusLight");
+const body = document.body;
 
-let lang = "en";
-
-const light = document.getElementById("statusLight");
-const text = document.getElementById("statusText");
-const timeText = document.getElementById("timeText");
-const controls = document.getElementById("controls");
-
-function formatTime(h){
-  const a = h>=12?"PM":"AM";
-  h = h%12||12;
-  return h+":00 "+a;
+function setOpen() {
+  manualOverride = true;
+  closedToday = false;
+  updateStatus(true);
 }
 
-function login(){
-  const p = document.getElementById("password").value;
-  if(p===OWNER_PASSWORD){
-    controls.style.display="block";
-    document.getElementById("loginBox").style.display="none";
-  } else alert("Wrong password");
+function setClosed() {
+  manualOverride = true;
+  closedToday = false;
+  updateStatus(false);
 }
 
-function setOpen(){ localStorage.setItem("manual","open"); updateUI(); }
-function setClosed(){ localStorage.setItem("manual","closed"); updateUI(); }
-function setClosedToday(){ localStorage.setItem("manual","today"); updateUI(); }
-
-function toggleDark(){
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
+function setClosedToday() {
+  manualOverride = true;
+  closedToday = true;
+  statusText.innerText = "Closed Today ❌";
+  statusLight.style.background = "red";
 }
 
-function toggleLang(){
-  lang = lang==="en"?"hi":"en";
-  updateUI();
-}
-
-function updateUI(){
-  const now = new Date();
-  const day = now.getDay();
-  const hour = now.getHours();
-  const manual = localStorage.getItem("manual");
-  const today = now.toISOString().split("T")[0];
-
-  if(holidays.includes(today)){
-    setStatus("HOLIDAY","आज बंद है","orange");
-    return;
-  }
-
-  if(manual==="open"){
-    setStatus("SHOP IS OPEN","दुकान खुली है","green");
-    return;
-  }
-
-  if(manual==="today"){
-    setStatus("CLOSED TODAY","आज बंद है","orange");
-    return;
-  }
-
-  const hours = schedule[day];
-  if(!hours){
-    setStatus("SUNDAY CLOSED","रविवार बंद","red");
-    return;
-  }
-
-  if(hour>=hours[0] && hour<hours[1]){
-    setStatus("SHOP IS OPEN","दुकान खुली है","green",hours[1]);
+function updateStatus(isOpen) {
+  if (isOpen) {
+    statusText.innerText = "We are OPEN 🟢";
+    statusLight.style.background = "green";
   } else {
-    setStatus("SHOP IS CLOSED","दुकान बंद है","red",hours[0]);
+    statusText.innerText = "We are CLOSED 🔴";
+    statusLight.style.background = "red";
   }
 }
 
-function setStatus(en,hi,color,time){
-  light.style.background=color;
-  text.innerText = lang==="en"?en:hi;
-  timeText.innerText = time ? 
-    (lang==="en"?"Time: ":"समय: ")+formatTime(time) : "";
+function autoCheck() {
+  if (manualOverride) return;
+
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour >= OPEN_TIME && hour < CLOSE_TIME) {
+    updateStatus(true);
+  } else {
+    updateStatus(false);
+  }
 }
 
-// Map
-function changeMap(loc){
-  document.getElementById("map").src =
-  "https://www.google.com/maps?q="+loc+"&output=embed";
+setInterval(autoCheck, 60000);
+autoCheck();
+
+/* Dark Mode */
+function toggleDark() {
+  body.classList.toggle("dark");
+  body.classList.toggle("light");
 }
-changeMap("Ludhiana+Punjab+India");
+/* Premium Card */
+.card {
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
+}
 
-// Visitor counter
-let v = localStorage.getItem("visits")||0;
-v++;
-localStorage.setItem("visits",v);
-document.getElementById("visits").innerText =
-  "Visitors: "+v;
+/* Premium buttons */
+button {
+  background: linear-gradient(135deg, #00c853, #64dd17);
+  color: #000;
+  font-weight: bold;
+}
 
-updateUI();
+button.close {
+  background: linear-gradient(135deg, #ff5252, #ff1744);
+  color: #fff;
+}
+
+button.today {
+  background: linear-gradient(135deg, #ff9100, #ff6d00);
+  color: #000;
+}
+
+/* Status text */
+#statusText {
+  font-size: 22px;
+  font-weight: bold;
+}
