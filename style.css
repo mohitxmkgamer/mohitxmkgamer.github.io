@@ -1,85 +1,93 @@
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: url("background.jpg") center/cover no-repeat fixed;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+  transition: background 0.3s ease;
 }
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-}
-
-body.dark { color: white; }
-body.light { color: black; }
 
 .container {
-  position: relative;
-  z-index: 2;
-  max-width: 420px;
-  margin: auto;
-  padding: 20px;
+  text-align: center;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  animation: fadeIn 0.6s ease;
 }
 
-#shopName {
-  font-size: 28px;
-  margin-top: 20px;
+.shop-name {
+  margin-bottom: 20px;
+  font-size: 2rem;
 }
 
-#statusIcon {
-  font-size: 80px;
-  margin: 15px;
+.status {
+  padding: 15px 25px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
-  50% { transform: scale(1.2); text-shadow: 0 0 25px #00ff00; }
-  100% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
+.status.open {
+  background: #2ecc71;
+  color: white;
 }
 
-.pulse {
-  animation: pulse 1.2s infinite;
+.status.closed {
+  background: #e74c3c;
+  color: white;
 }
 
-.loginBox input {
-  width: 85%;
-  padding: 10px;
-  margin: 5px 0;
+.status.soon {
+  background: #f39c12;
+  color: white;
 }
 
-button {
-  padding: 10px;
+.status.checking {
+  background: #999;
+  color: white;
+}
+
+.admin-panel button {
   margin: 6px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 12px;
+  font-size: 1rem;
   cursor: pointer;
 }
 
-button { background: #4caf50; color: white; }
-.close { background: #f44336; }
-.today { background: #ff9800; }
-.reset { background: #2196f3; }
-
-#adminPanel {
-  display: none;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.15);
-  padding: 15px;
-  border-radius: 10px;
+.admin-panel button:hover {
+  opacity: 0.85;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  font-size: 13px;
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Auto dark mode */
 @media (prefers-color-scheme: dark) {
   body {
-    background: #0e0e0e;
-    color: #fff;
+    background: #0d0d0d;
+  }
+
+  .container {
+    background: #1a1a1a;
+    color: white;
   }
 }
