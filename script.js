@@ -1,4 +1,4 @@
-const ADMIN_PIN = "6280"; // CHANGE THIS
+const ADMIN_PIN = "Ashok@098"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
@@ -31,7 +31,7 @@ function requireAdmin(action) {
   action();
 }
 
-/* Status Functions */
+/* Status Controls */
 function setOpen() {
   manualOverride = true;
   closedToday = false;
@@ -64,13 +64,8 @@ function updateStatus(isOpen) {
 /* Auto Timing */
 function autoCheck() {
   if (manualOverride || closedToday) return;
-
   const hour = new Date().getHours();
-  if (hour >= OPEN_TIME && hour < CLOSE_TIME) {
-    updateStatus(true);
-  } else {
-    updateStatus(false);
-  }
+  hour >= OPEN_TIME && hour < CLOSE_TIME ? updateStatus(true) : updateStatus(false);
 }
 
 setInterval(autoCheck, 60000);
