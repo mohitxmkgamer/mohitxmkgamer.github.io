@@ -1,12 +1,12 @@
 body {
   text-align: center;
   font-family: Arial, sans-serif;
-  transition: 0.3s;
   margin: 0;
   padding: 0;
+  transition: 0.3s;
 }
 
-/* Light & Dark mode */
+/* Light & Dark */
 body.light {
   background: #f4f4f4;
   color: #000;
@@ -21,6 +21,17 @@ body.dark {
 .logo {
   width: 120px;
   margin-top: 20px;
+}
+
+/* Card */
+.card {
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
 }
 
 /* Status Light */
@@ -38,11 +49,7 @@ body.dark {
   100% { opacity: 1; }
 }
 
-/* Buttons & Inputs */
-.buttons {
-  margin: 15px 0;
-}
-
+/* Buttons & Input */
 button, input {
   padding: 10px 14px;
   margin: 5px;
@@ -52,35 +59,36 @@ button, input {
   cursor: pointer;
 }
 
+button {
+  background: linear-gradient(135deg, #00c853, #64dd17);
+  font-weight: bold;
+}
+
+button.close {
+  background: linear-gradient(135deg, #ff5252, #ff1744);
+  color: #fff;
+}
+
+button.today {
+  background: linear-gradient(135deg, #ff9100, #ff6d00);
+}
+
 button:hover {
   opacity: 0.85;
 }
 
-/* Login box */
-#loginBox {
-  margin: 15px;
-}
-
 /* Map */
 .map {
-  width: 90%;
+  width: 100%;
   height: 250px;
   border: 0;
-  margin: 20px auto;
   border-radius: 8px;
+  margin-top: 15px;
 }
 
-/* Mobile friendly */
+/* Mobile */
 @media (max-width: 600px) {
   button, input {
     width: 90%;
-    max-width: 300px;
   }
-  
-}
-#loginBox input {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  margin-bottom: 10px;
 }
