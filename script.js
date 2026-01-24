@@ -1,16 +1,17 @@
-const ADMIN_PIN = "6280"; // CHANGE THIS
+const ADMIN_PIN = "1234"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
 
-const OPEN_TIME = 10;
-const CLOSE_TIME = 21;
+const OPEN_TIME = 10; // 10 AM
+const CLOSE_TIME = 21; // 9 PM
 
 const statusText = document.getElementById("statusText");
 const statusLight = document.getElementById("statusLight");
-const body = document.body;
 const adminPanel = document.getElementById("adminPanel");
+const body = document.body;
 
+/* Admin Login */
 function loginAdmin() {
   const pin = document.getElementById("pinInput").value;
   if (pin === ADMIN_PIN) {
@@ -30,6 +31,7 @@ function requireAdmin(action) {
   action();
 }
 
+/* Status Functions */
 function setOpen() {
   manualOverride = true;
   closedToday = false;
@@ -59,6 +61,7 @@ function updateStatus(isOpen) {
   }
 }
 
+/* Auto Timing */
 function autoCheck() {
   if (manualOverride || closedToday) return;
 
