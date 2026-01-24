@@ -1,111 +1,126 @@
 const ADMIN_PIN = "6280"; // CHANGE THIS
-let isAdmin = false;
-let manualOverride = false;
-let closedToday = false;
-let wrongAttempts = 0;
-let blocked = false;
+const OPEN_HOUR = 10;
+const CLOSE_HOUR = 21;
+const CLOSING_SOON_MINUTES = 30;
 
-const OPEN_TIME = 10; // 10 AM
-const CLOSE_TIME = 21; // 9 PM
+const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
+localStorage.setItem("deviceId", deviceId);
+let wrongAttempts = Number(localStorage.getItem("attempts")) || 0;
+let blockedDevices = JSON.parse(localStorage.getItem("blockedDevices")) || [];
 
 const statusText = document.getElementById("statusText");
 const statusIcon = document.getElementById("statusIcon");
 const adminPanel = document.getElementById("adminPanel");
-const body = document.body;
-const loginBtn = document.getElementById("loginBtn");
-const pinInput = document.getElementById("pinInput");
+const blockedList = document.getElementById("blockedList");
 
-/* Detect device dark mode on load */
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    body.classList.add("dark");
-  } else {
-    body.classList.add("light");
-  }
-  checkStatus();
-});
+if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+  document.body.classList.add("dark");
+} else {
+  document.body.classList.add("light");
+}
 
-/* ADMIN LOGIN */
-loginBtn.addEventListener("click", loginAdmin);
+let manualOverride = false;  // true when admin manually sets status
+let closedToday = false;
+let forcedStatus = null;      // "open" | "closed" | "closedToday"
 
-function loginAdmin() {
-  if (blocked) {
-    alert("Too many wrong attempts! Admin panel blocked 🔒");
-    return;
-  }
+/* ------------------- STATUS LOGIC ------------------- */
+function updateStatus() {
+  const now = new Date();
+  const hour = now.getHours();
+  const minutes = now.getMinutes();
 
-  const pin = pinInput.value.trim();
-  if (pin === ADMIN_PIN) {
-    isAdmin = true;
-    adminPanel.style.display = "block";
-    wrongAttempts = 0;
-    alert("Admin access granted ✅");
-    pinInput.value = "";
-  } else {
-    wrongAttempts++;
-    alert(`Wrong PIN ❌ (${wrongAttempts}/3)`);
-    if (wrongAttempts >= 3) {
-      blocked = true;
-      alert("Admin access blocked due to 3 wrong attempts! 🔒");
+  // Reset pulse
+  statusIcon.classList.remove("pulse");
+
+  if (manualOverride) {
+    if (forcedStatus === "open") {
+      statusText.innerText = "We are OPEN 🟢";
+      statusIcon.style.color = "green";
+      statusIcon.classList.add("pulse");
+    } else if (forcedStatus === "closed") {
+      statusText.innerText = "We are CLOSED 🔴";
+      statusIcon.style.color = "red";
+    } else if (forcedStatus === "closedToday") {
+      statusText.innerText = "Closed Today ❌";
+      statusIcon.style.color = "red";
     }
-    pinInput.value = "";
+  } else {
+    // Auto logic
+    if (hour < OPEN_HOUR) {
+      statusText.innerText = "Opening Soon ⏰";
+      statusIcon.style.color = "orange";
+    } else if (hour === CLOSE_HOUR && minutes >= 60 - CLOSING_SOON_MINUTES) {
+      statusText.innerText = "Closing Soon ⚠️";
+      statusIcon.style.color = "yellow";
+    } else if (hour >= OPEN_HOUR && hour < CLOSE_HOUR) {
+      statusText.innerText = "We are OPEN 🟢";
+      statusIcon.style.color = "green";
+      statusIcon.classList.add("pulse");
+    } else {
+      statusText.innerText = "We are CLOSED 🔴";
+      statusIcon.style.color = "red";
+    }
   }
-}
 
-/* ONLY ADMIN ACTIONS */
-function requireAdmin(action) {
-  if (!isAdmin) {
-    alert("Admin access required 🔒");
-    return;
-  }
-  action();
-}
-
-/* RESET BLOCKED LOGIN */
-function resetBlock() {
-  blocked = false;
-  wrongAttempts = 0;
-  alert("Blocked login reset ✅");
-}
-
-/* SHOP STATUS CONTROLS */
-function setOpen() {
-  manualOverride = true;
-  closedToday = false;
-  updateStatus(true);
-}
-
-function setClosed() {
-  manualOverride = true;
-  closedToday = false;
-  updateStatus(false);
-}
-
-function setClosedToday() {
-  manualOverride = true;
-  closedToday = true;
-  statusText.innerText = "Closed Today ❌";
-  statusIcon.style.color = "red";
-}
-
-/* UPDATE STATUS */
-function updateStatus(isOpen) {
-  statusText.innerText = isOpen ? "We are OPEN 🟢" : "We are CLOSED 🔴";
-  statusIcon.style.color = isOpen ? "green" : "red";
   statusIcon.innerText = "🍴";
 }
 
-/* AUTO STATUS BASED ON TIME */
-function checkStatus() {
-  if (manualOverride || closedToday) return;
-  const hour = new Date().getHours();
-  updateStatus(hour >= OPEN_TIME && hour < CLOSE_TIME);
+/* ------------------- ADMIN LOGIN ------------------- */
+document.getElementById("loginBtn").onclick = () => {
+  if (blockedDevices.includes(deviceId)) {
+    alert("This device is blocked 🔒");
+    return;
+  }
+
+  const pin = document.getElementById("pinInput").value;
+
+  if (pin === ADMIN_PIN) {
+    adminPanel.style.display = "block";
+    wrongAttempts = 0;
+    localStorage.setItem("attempts", 0);
+    renderBlocked();
+  } else {
+    wrongAttempts++;
+    localStorage.setItem("attempts", wrongAttempts);
+    if (wrongAttempts >= 3) {
+      blockedDevices.push(deviceId);
+      localStorage.setItem("blockedDevices", JSON.stringify(blockedDevices));
+      alert("Device blocked after 3 wrong attempts 🔒");
+    } else {
+      alert(`Wrong PIN (${wrongAttempts}/3)`);
+    }
+  }
+};
+
+/* ------------------- ADMIN CONTROLS ------------------- */
+function setOpen() { manualOverride = true; forcedStatus = "open"; updateStatus(); }
+function setClosed() { manualOverride = true; forcedStatus = "closed"; updateStatus(); }
+function setClosedToday() { manualOverride = true; forcedStatus = "closedToday"; updateStatus(); }
+
+/* ------------------- BLOCK LIST ------------------- */
+function renderBlocked() {
+  blockedList.innerHTML = "";
+  blockedDevices.forEach(id => {
+    const li = document.createElement("li");
+    li.innerText = id;
+    blockedList.appendChild(li);
+  });
 }
 
-setInterval(checkStatus, 60000);
+function resetBlocks() {
+  blockedDevices = [];
+  localStorage.removeItem("blockedDevices");
+  localStorage.setItem("attempts", 0);
+  renderBlocked();
+  alert("All devices unblocked ✅");
+}
 
-/* DARK MODE TOGGLE */
+/* ------------------- DARK MODE ------------------- */
 function toggleDark() {
-  body.classList.toggle("dark");
-  body.classList.toggle("light");
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
 }
+
+/* ------------------- AUTO UPDATE ------------------- */
+updateStatus();
+setInterval(updateStatus, 60000);
