@@ -2,16 +2,37 @@
 <html>
 <head>
   <title>My Shop Status</title>
-  <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<h1>Ashok Gol Gappe</h1>
+<body class="light">
 
+<!-- LOGO -->
+<img src="logo.png" alt="Shop Logo" class="logo">
+
+<h1>MY SHOP</h1>
+
+<!-- STATUS LIGHT -->
 <div id="statusLight"></div>
 <h2 id="statusText"></h2>
 <p id="timeText"></p>
+
+<!-- CONTROL BUTTONS -->
+<div class="buttons">
+  <button onclick="setOpen()">OPEN</button>
+  <button onclick="setClosed()">CLOSE</button>
+  <button onclick="setClosedToday()">CLOSED TODAY</button>
+  <button onclick="toggleDark()">🌙 Dark Mode</button>
+</div>
+
+<!-- MAP -->
+<h3>📍 Our Location</h3>
+<iframe
+  src="https://www.google.com/maps?q=YOUR+SHOP+LOCATION&output=embed"
+  class="map"
+  loading="lazy">
+</iframe>
 
 <script src="script.js"></script>
 </body>
