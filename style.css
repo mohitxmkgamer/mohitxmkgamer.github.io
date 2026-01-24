@@ -42,19 +42,11 @@ body.dark {
   backdrop-filter: blur(10px);
 }
 
-/* Status Light */
-#statusLight {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
+/* Status Icon */
+#statusIcon {
+  font-size: 80px;
   margin: 20px auto;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+  display: inline-block;
 }
 
 /* Buttons & Input */
@@ -79,6 +71,11 @@ button.close {
 
 button.today {
   background: linear-gradient(135deg, #ff9100, #ff6d00);
+}
+
+button.reset {
+  background: linear-gradient(135deg, #2979ff, #00b0ff);
+  color: #fff;
 }
 
 button:hover {
