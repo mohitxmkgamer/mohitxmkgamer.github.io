@@ -2,33 +2,55 @@ const ADMIN_PIN = "Ashok@098"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
+let wrongAttempts = 0;
+let blocked = false;
 
 const OPEN_TIME = 10; // 10 AM
 const CLOSE_TIME = 21; // 9 PM
 
 const statusText = document.getElementById("statusText");
-const statusLight = document.getElementById("statusLight");
+const statusIcon = document.getElementById("statusIcon");
 const adminPanel = document.getElementById("adminPanel");
 const body = document.body;
 
 /* Admin Login */
 function loginAdmin() {
+  if (blocked) {
+    alert("Too many wrong attempts! Admin panel blocked 🔒");
+    return;
+  }
+
   const pin = document.getElementById("pinInput").value;
   if (pin === ADMIN_PIN) {
     isAdmin = true;
     adminPanel.style.display = "block";
+    wrongAttempts = 0; // reset attempts on success
     alert("Admin access granted ✅");
   } else {
-    alert("Wrong PIN ❌");
+    wrongAttempts++;
+    alert(`Wrong PIN ❌ (${wrongAttempts}/3)`);
+
+    if (wrongAttempts >= 3) {
+      blocked = true;
+      alert("Admin access blocked due to 3 wrong attempts! 🔒");
+    }
   }
 }
 
+/* Only admin actions */
 function requireAdmin(action) {
   if (!isAdmin) {
     alert("Admin access required 🔒");
     return;
   }
   action();
+}
+
+/* Reset block */
+function resetBlock() {
+  blocked = false;
+  wrongAttempts = 0;
+  alert("Blocked IP/Admin reset ✅");
 }
 
 /* Status Controls */
@@ -48,16 +70,17 @@ function setClosedToday() {
   manualOverride = true;
   closedToday = true;
   statusText.innerText = "Closed Today ❌";
-  statusLight.style.background = "red";
+  statusIcon.innerText = "🍴"; // Fork & Knife
 }
 
+/* Update Status */
 function updateStatus(isOpen) {
   if (isOpen) {
     statusText.innerText = "We are OPEN 🟢";
-    statusLight.style.background = "green";
+    statusIcon.innerText = "🍴"; // fork & knife still
   } else {
     statusText.innerText = "We are CLOSED 🔴";
-    statusLight.style.background = "red";
+    statusIcon.innerText = "🍴";
   }
 }
 
