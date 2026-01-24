@@ -12,20 +12,31 @@
 
   <div class="card">
     <!-- SHOP NAME -->
-    <h1 id="shopName">Ashok Gol Gappe</h1>
+    <h1 id="shopName">Your Shop Name</h1>
 
     <!-- STATUS -->
     <h2 id="statusText">Checking status...</h2>
-    <div id="statusIcon">🍴</div> <!-- Fork & Knife Icon -->
+    <div id="statusIcon">🍴</div>
 
     <!-- Admin Login -->
     <div id="loginBox">
       <input type="password" id="pinInput" placeholder="Admin PIN">
-      <button onclick="loginAdmin()">Admin Login</button>
+      <button id="loginBtn">Admin Login</button>
     </div>
 
     <!-- Admin Controls -->
     <div id="adminPanel" style="display:none;">
       <button onclick="requireAdmin(setOpen)">Open Shop</button>
       <button class="close" onclick="requireAdmin(setClosed)">Close Shop</button>
-      <button class="today" onclick="requireAdmin(setClosedToday)">Closed Today</b
+      <button class="today" onclick="requireAdmin(setClosedToday)">Closed Today</button>
+      <button class="reset" onclick="requireAdmin(resetBlock)">Reset Blocked</button>
+    </div>
+
+    <!-- Customer Buttons -->
+    <button onclick="toggleDark()">🌙 Toggle Dark Mode</button>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
