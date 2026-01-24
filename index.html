@@ -1,72 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Food Shop</title>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
-
+  <title>Shop Status</title>
   <link rel="stylesheet" href="style.css">
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAe1dKc-nmQvd0MZMCyLjRGUsda5xsLU7g",
-      authDomain: "my-shop-afc91.firebaseapp.com",
-      databaseURL: "https://my-shop-afc91-default-rtdb.asia-southeast1.firebasedatabase.app/",
-      projectId: "my-shop-afc91",
-      storageBucket: "my-shop-afc91.firebasestorage.app",
-      messagingSenderId: "45936806412",
-      appId: "1:45936806412:web:5b320e5dfd4d6e38c63c29"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-  </script>
 </head>
-
 <body>
 
-  <div class="container">
+<h1 id="status">Checking status...</h1>
 
-    <h1 class="shop-name">🍴 My Food Shop</h1>
-
-    <div id="status" class="status checking">
-      Checking status...
-    </div>
-
-    <div class="admin-panel">
-      <button onclick="setStatus('OPEN')">Open</button>
-      <button onclick="setStatus('CLOSED')">Closed</button>
-      <button onclick="setStatus('OPENING_SOON')">Opening Soon</button>
-    </div>
-
-  </div>
-
-  <script>
-    const statusDiv = document.getElementById("status");
-
-    db.ref("shopStatus").on("value", (snapshot) => {
-      const status = snapshot.val();
-
-      statusDiv.className = "status";
-      statusDiv.textContent = status;
-
-      if (status === "OPEN") statusDiv.classList.add("open");
-      if (status === "CLOSED") statusDiv.classList.add("closed");
-      if (status === "OPENING_SOON") statusDiv.classList.add("soon");
-    });
-
-    function setStatus(value) {
-      db.ref("shopStatus").set(value);
-    }
-  </script>
-
-  <button onclick="db.ref('shopStatus').set('OPEN')">
-  Force Open
-</button>
-
+<script src="script.js"></script>
 </body>
 </html>
