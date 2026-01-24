@@ -92,3 +92,16 @@ function updateUI() {
 }
 
 updateUI();
+
+<h3>📍 Our Branches</h3>
+
+<select onchange="changeMap(this.value)">
+  <option value="Ludhiana+Punjab+India">Ludhiana</option>
+  <option value="Chandigarh+India">Chandigarh</option>
+</select>
+
+<iframe
+  id="map"
+  class="map"
+  loading="lazy">
+</iframe>
