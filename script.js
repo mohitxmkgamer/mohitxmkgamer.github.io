@@ -1,4 +1,4 @@
-const ADMIN_PIN = "Ashok$098"; // CHANGE THIS
+const ADMIN_PIN = "1234"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
@@ -15,8 +15,13 @@ const body = document.body;
 const loginBtn = document.getElementById("loginBtn");
 const pinInput = document.getElementById("pinInput");
 
-/* INITIAL STATUS ON PAGE LOAD */
+/* Detect device dark mode on load */
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    body.classList.add("dark");
+  } else {
+    body.classList.add("light");
+  }
   checkStatus();
 });
 
@@ -80,12 +85,13 @@ function setClosedToday() {
   manualOverride = true;
   closedToday = true;
   statusText.innerText = "Closed Today ❌";
-  statusIcon.innerText = "🍴";
+  statusIcon.style.color = "red";
 }
 
 /* UPDATE STATUS */
 function updateStatus(isOpen) {
   statusText.innerText = isOpen ? "We are OPEN 🟢" : "We are CLOSED 🔴";
+  statusIcon.style.color = isOpen ? "green" : "red";
   statusIcon.innerText = "🍴";
 }
 
