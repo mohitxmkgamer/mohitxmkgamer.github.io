@@ -128,3 +128,5 @@ function clearBlocks() {
 /* ---------------- INIT ---------------- */
 updateStatus();
 setInterval(updateStatus, 60000);
+
+.on("value")
