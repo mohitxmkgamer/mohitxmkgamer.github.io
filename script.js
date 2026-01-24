@@ -1,4 +1,4 @@
-const ADMIN_PIN = "1234"; // CHANGE THIS
+const ADMIN_PIN = "Ashok$098"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
