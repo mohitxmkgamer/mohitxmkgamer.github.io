@@ -1,6 +1,22 @@
 body {
   text-align: center;
   font-family: Arial, sans-serif;
+  transition: 0.3s;
+}
+
+body.light {
+  background: #f4f4f4;
+  color: #000;
+}
+
+body.dark {
+  background: #121212;
+  color: #fff;
+}
+
+.logo {
+  width: 120px;
+  margin-top: 20px;
 }
 
 #statusLight {
@@ -8,7 +24,6 @@ body {
   height: 100px;
   border-radius: 50%;
   margin: 20px auto;
-  background: red;
   animation: blink 1s infinite;
 }
 
@@ -16,4 +31,28 @@ body {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
   100% { opacity: 1; }
+}
+
+.buttons {
+  margin: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.map {
+  width: 90%;
+  height: 250px;
+  border: 0;
+  margin: 20px auto;
 }
