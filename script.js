@@ -1,12 +1,34 @@
+const ADMIN_PIN = "6280"; // CHANGE THIS
+let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
 
-const OPEN_TIME = 10;   // 10 AM
-const CLOSE_TIME = 21; // 9 PM
+const OPEN_TIME = 10;
+const CLOSE_TIME = 21;
 
 const statusText = document.getElementById("statusText");
 const statusLight = document.getElementById("statusLight");
 const body = document.body;
+const adminPanel = document.getElementById("adminPanel");
+
+function loginAdmin() {
+  const pin = document.getElementById("pinInput").value;
+  if (pin === ADMIN_PIN) {
+    isAdmin = true;
+    adminPanel.style.display = "block";
+    alert("Admin access granted ✅");
+  } else {
+    alert("Wrong PIN ❌");
+  }
+}
+
+function requireAdmin(action) {
+  if (!isAdmin) {
+    alert("Admin access required 🔒");
+    return;
+  }
+  action();
+}
 
 function setOpen() {
   manualOverride = true;
@@ -38,11 +60,9 @@ function updateStatus(isOpen) {
 }
 
 function autoCheck() {
-  if (manualOverride) return;
+  if (manualOverride || closedToday) return;
 
-  const now = new Date();
-  const hour = now.getHours();
-
+  const hour = new Date().getHours();
   if (hour >= OPEN_TIME && hour < CLOSE_TIME) {
     updateStatus(true);
   } else {
@@ -57,37 +77,4 @@ autoCheck();
 function toggleDark() {
   body.classList.toggle("dark");
   body.classList.toggle("light");
-}
-/* Premium Card */
-.card {
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 420px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  backdrop-filter: blur(10px);
-}
-
-/* Premium buttons */
-button {
-  background: linear-gradient(135deg, #00c853, #64dd17);
-  color: #000;
-  font-weight: bold;
-}
-
-button.close {
-  background: linear-gradient(135deg, #ff5252, #ff1744);
-  color: #fff;
-}
-
-button.today {
-  background: linear-gradient(135deg, #ff9100, #ff6d00);
-  color: #000;
-}
-
-/* Status text */
-#statusText {
-  font-size: 22px;
-  font-weight: bold;
 }
