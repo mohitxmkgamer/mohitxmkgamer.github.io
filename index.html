@@ -4,7 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shop Status</title>
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js"></script>
+  <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAe1dKc-nmQvd0MZMCyLjRGUsda5xsLU7g",
+    authDomain: "my-shop-afc91.firebaseapp.com",
+    databaseURL: "https://my-shop-afc91-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "my-shop-afc91",
+    storageBucket: "my-shop-afc91.firebasestorage.app",
+    messagingSenderId: "45936806412",
+    appId: "1:45936806412:web:5b320e5dfd4d6e38c63c29"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
   <link rel="stylesheet" href="style.css">
+  
+  <h1 id="shopName">🍴 My Food Shop</h1>
+
+<div id="status" class="status checking">
+  Checking status...
+</div>
+
+  <script>
+  const statusDiv = document.getElementById("status");
+
+  db.ref("shopStatus").on("value", snapshot => {
+    const status = snapshot.val();
+
+    statusDiv.className = "status";
+    statusDiv.textContent = status;
+
+    if (status === "OPEN") statusDiv.classList.add("open");
+    if (status === "CLOSED") statusDiv.classList.add("closed");
+    if (status === "OPENING_SOON") statusDiv.classList.add("soon");
+  });
+</script>
+
 </head>
 <body>
   <div class="overlay"></div>
@@ -38,6 +78,19 @@
       <button onclick="clearBlocks()" class="reset">Unblock All</button>
     </div>
   </div>
+  
+<div class="admin">
+  <button onclick="setStatus('OPEN')">Open</button>
+  <button onclick="setStatus('CLOSED')">Closed</button>
+  <button onclick="setStatus('OPENING_SOON')">Opening Soon</button>
+</div>
+
+  <script>
+  function setStatus(value) {
+    db.ref("shopStatus").set(value);
+  }
+</script>
+
 
   <script src="script.js"></script>
 </body>
