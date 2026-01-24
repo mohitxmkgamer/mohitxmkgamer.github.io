@@ -19,12 +19,14 @@
 <p id="timeText"></p>
 
 <!-- CONTROL BUTTONS -->
-<div class="buttons">
+<div class="buttons" id="controls" style="display:none;">
   <button onclick="setOpen()">OPEN</button>
   <button onclick="setClosed()">CLOSE</button>
   <button onclick="setClosedToday()">CLOSED TODAY</button>
-  <button onclick="toggleDark()">🌙 Dark Mode</button>
 </div>
+
+<button onclick="unlockControls()">🔒 Owner Login</button>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 
 <!-- MAP -->
 <h3>📍 Our Location</h3>
