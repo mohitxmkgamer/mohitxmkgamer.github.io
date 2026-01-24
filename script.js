@@ -1,10 +1,10 @@
 /* ---------------- CONFIG ---------------- */
 const ADMINS = [
-  { username: "hotice", password: "iamyou!123" },
-  { username: "director", password: "Ashok@098" }
+  { username: "hotice", password: "Iamyou!123" },
+  { username: "director", password: "Ashok$123" }
 ];
 
-const OPEN_HOUR = 6;
+const OPEN_HOUR = 18;
 const CLOSE_HOUR = 22;
 
 /* ---------------- DEVICE ID ---------------- */
@@ -12,8 +12,10 @@ const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
 localStorage.setItem("deviceId", deviceId);
 
 let blockedDevices = JSON.parse(localStorage.getItem("blockedDevices")) || [];
-let manualMode = false;
-let forcedStatus = null;
+
+/* ---------------- PERSISTENT STATUS ---------------- */
+let manualMode = JSON.parse(localStorage.getItem("manualMode")) || false;
+let forcedStatus = localStorage.getItem("forcedStatus") || null;
 
 /* ---------------- DARK MODE AUTO ---------------- */
 document.body.classList.add(
@@ -89,12 +91,21 @@ document.getElementById("loginBtn").onclick = () => {
 function setStatus(s) {
   manualMode = true;
   forcedStatus = s;
+
+  // SAVE PERSISTENTLY
+  localStorage.setItem("manualMode", JSON.stringify(manualMode));
+  localStorage.setItem("forcedStatus", forcedStatus);
+
   updateStatus();
 }
 
 function resetAuto() {
   manualMode = false;
   forcedStatus = null;
+
+  localStorage.setItem("manualMode", JSON.stringify(manualMode));
+  localStorage.setItem("forcedStatus", forcedStatus);
+
   updateStatus();
 }
 
