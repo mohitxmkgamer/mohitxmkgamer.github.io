@@ -9,11 +9,11 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.6);
 }
 
-body.light { color: #000; }
-body.dark { color: #fff; }
+body.dark { color: white; }
+body.light { color: black; }
 
 .container {
   position: relative;
@@ -23,43 +23,45 @@ body.dark { color: #fff; }
   padding: 20px;
 }
 
-.logo { width: 120px; margin-top: 20px; }
-
-#shopName { font-size: 28px; font-weight: bold; }
+#shopName {
+  font-size: 28px;
+  margin-top: 20px;
+}
 
 #statusIcon {
   font-size: 80px;
   margin: 15px;
-  transition: 0.3s;
 }
 
-/* NEON PULSE */
-@keyframes neonPulse {
+@keyframes pulse {
   0% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
-  50% { transform: scale(1.2); text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+  50% { transform: scale(1.2); text-shadow: 0 0 25px #00ff00; }
   100% { transform: scale(1); text-shadow: 0 0 5px #00ff00; }
 }
 
 .pulse {
-  animation: neonPulse 1s infinite;
+  animation: pulse 1.2s infinite;
 }
 
-.loginBox input { width: 80%; padding: 10px; margin-bottom: 10px; }
+.loginBox input {
+  width: 85%;
+  padding: 10px;
+  margin: 5px 0;
+}
 
 button {
   padding: 10px;
   margin: 6px;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
 }
 
-button { background: #4caf50; color: #fff; }
-button.close { background: #f44336; }
-button.today { background: #ff9800; }
-button.reset { background: #2196f3; }
-.darkBtn { background: #555; }
+button { background: #4caf50; color: white; }
+.close { background: #f44336; }
+.today { background: #ff9800; }
+.reset { background: #2196f3; }
 
 #adminPanel {
   display: none;
@@ -69,6 +71,8 @@ button.reset { background: #2196f3; }
   border-radius: 10px;
 }
 
-ul { list-style: none; padding: 0; font-size: 14px; }
-
-@media (max-width: 600px) { .container { width: 95%; } }
+ul {
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+}
