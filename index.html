@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shop Status</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <div class="overlay"></div>
 
   <div class="container">
-    <img src="logo.png" class="logo" alt="Shop Logo">
+    <h1 id="shopName">🍽️ Ashok Gol Gappe</h1>
 
-    <h1 id="shopName">Your Shop Name</h1>
-
-    <h2 id="statusText">Loading status...</h2>
     <div id="statusIcon">🍴</div>
+    <h2 id="statusText">Checking status...</h2>
 
-    <!-- Admin Login -->
+    <!-- ADMIN LOGIN -->
     <div class="loginBox">
-      <input type="password" id="pinInput" placeholder="Admin PIN">
+      <input id="usernameInput" placeholder="Admin Username">
+      <input id="passwordInput" type="password" placeholder="Admin Password">
       <button id="loginBtn">Admin Login</button>
     </div>
 
-    <!-- Admin Panel -->
+    <!-- ADMIN PANEL -->
     <div id="adminPanel">
-      <button onclick="setOpen()">Open</button>
-      <button class="close" onclick="setClosed()">Close</button>
-      <button class="today" onclick="setClosedToday()">Closed Today</button>
+      <h3>Admin Controls</h3>
+
+      <button onclick="setStatus('open')">Open</button>
+      <button onclick="setStatus('closed')" class="close">Closed</button>
+      <button onclick="setStatus('closedToday')" class="today">Closed Today</button>
+      <button onclick="setStatus('openingSoon')">Opening Soon</button>
+      <button onclick="setStatus('closingSoon')">Closing Soon</button>
+      <button onclick="resetAuto()" class="reset">Reset to Auto</button>
 
       <h3>Blocked Devices</h3>
       <ul id="blockedList"></ul>
-
-      <button class="reset" onclick="resetBlocks()">Unblock All</button>
+      <button onclick="clearBlocks()" class="reset">Unblock All</button>
     </div>
-
-    <button class="darkBtn" onclick="toggleDark()">🌙 Toggle Theme</button>
   </div>
 
   <script src="script.js"></script>
