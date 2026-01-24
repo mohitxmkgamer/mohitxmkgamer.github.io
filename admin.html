@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Admin Login</h2>
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<div id="panel" style="display:none;">
+  <h3>Change Shop Status</h3>
+  <button onclick="setStatus('OPEN')">OPEN</button>
+  <button onclick="setStatus('CLOSED')">CLOSED</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
