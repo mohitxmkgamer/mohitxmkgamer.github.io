@@ -1,90 +1,42 @@
-body {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  transition: 0.3s;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shop Status</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-/* Light & Dark */
-body.light {
-  background: #f4f4f4;
-  color: #000;
-}
+<body class="light">
 
-body.dark {
-  background: #121212;
-  color: #fff;
-}
+  <img src="logo.png" class="logo" alt="Shop Logo">
 
-/* Logo */
-.logo {
-  width: 120px;
-  margin-top: 20px;
-}
+  <div class="card">
+    <!-- SHOP NAME -->
+    <h1 id="shopName">Your Shop Name</h1>
 
-/* Shop Name */
-#shopName {
-  font-size: 28px;
-  margin: 10px 0;
-  font-weight: bold;
-  color: #333;
-}
+    <!-- STATUS -->
+    <h2 id="statusText">Checking status...</h2>
+    <div id="statusIcon">🍴</div>
 
-/* Card */
-.card {
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 420px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  backdrop-filter: blur(10px);
-}
+    <!-- Admin Login -->
+    <div id="loginBox">
+      <input type="password" id="pinInput" placeholder="Admin PIN">
+      <button id="loginBtn">Admin Login</button>
+    </div>
 
-/* Status Icon */
-#statusIcon {
-  font-size: 80px;
-  margin: 20px auto;
-  display: inline-block;
-}
+    <!-- Admin Controls -->
+    <div id="adminPanel" style="display:none;">
+      <button onclick="requireAdmin(setOpen)">Open Shop</button>
+      <button class="close" onclick="requireAdmin(setClosed)">Close Shop</button>
+      <button class="today" onclick="requireAdmin(setClosedToday)">Closed Today</button>
+      <button class="reset" onclick="requireAdmin(resetBlock)">Reset Blocked</button>
+    </div>
 
-/* Buttons & Input */
-button, input {
-  padding: 10px 14px;
-  margin: 6px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
+    <!-- Customer Buttons -->
+    <button onclick="toggleDark()">🌙 Toggle Dark Mode</button>
 
-button {
-  background: linear-gradient(135deg, #00c853, #64dd17);
-  font-weight: bold;
-}
+  </div>
 
-button.close {
-  background: linear-gradient(135deg, #ff5252, #ff1744);
-  color: #fff;
-}
-
-button.today {
-  background: linear-gradient(135deg, #ff9100, #ff6d00);
-}
-
-button.reset {
-  background: linear-gradient(135deg, #2979ff, #00b0ff);
-  color: #fff;
-}
-
-button:hover {
-  opacity: 0.85;
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  button, input {
-    width: 90%;
-  }
-}
+  <script src="script.js"></script>
+</body>
+</html>
