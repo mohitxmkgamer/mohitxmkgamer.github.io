@@ -76,4 +76,11 @@ button:hover {
     width: 90%;
     max-width: 300px;
   }
+  
+}
+#loginBox input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
 }
