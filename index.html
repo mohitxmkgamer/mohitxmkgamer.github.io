@@ -8,39 +8,45 @@
 
 <body class="light">
 
-<!-- LOGO -->
-<img src="logo.png" alt="Shop Logo" class="logo">
+<img src="logo.png" class="logo">
 
-<h1>MY SHOP</h1>
+<h1 id="shopTitle">MY SHOP</h1>
 
-<!-- STATUS LIGHT -->
+<!-- STATUS -->
 <div id="statusLight"></div>
 <h2 id="statusText"></h2>
 <p id="timeText"></p>
 
-<!-- CONTROL BUTTONS -->
+<!-- OWNER LOGIN -->
+<div id="loginBox">
+  <input type="password" id="password" placeholder="Owner Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- OWNER CONTROLS -->
 <div class="buttons" id="controls" style="display:none;">
   <button onclick="setOpen()">OPEN</button>
   <button onclick="setClosed()">CLOSE</button>
   <button onclick="setClosedToday()">CLOSED TODAY</button>
 </div>
 
-<button onclick="unlockControls()">🔒 Owner Login</button>
-<button onclick="toggleDark()">🌙 Dark Mode</button>
+<!-- TOGGLES -->
+<div class="buttons">
+  <button onclick="toggleDark()">🌙 Dark</button>
+  <button onclick="toggleLang()">🌐 Language</button>
+</div>
 
-<!-- MAP -->
-<h3>📍 Our Branches</h3>
-
+<!-- BRANCHES -->
+<h3 id="branchTitle">📍 Our Branches</h3>
 <select onchange="changeMap(this.value)">
   <option value="Ludhiana+Punjab+India">Ludhiana</option>
   <option value="Chandigarh+India">Chandigarh</option>
 </select>
 
-<iframe
-  id="map"
-  class="map"
-  loading="lazy">
-</iframe>
+<iframe id="map" class="map"></iframe>
+
+<!-- VISIT COUNTER -->
+<p id="visits"></p>
 
 <script src="script.js"></script>
 </body>
