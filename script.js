@@ -1,126 +1,119 @@
-const ADMIN_PIN = "6280"; // CHANGE THIS
-const OPEN_HOUR = 10;
-const CLOSE_HOUR = 21;
-const CLOSING_SOON_MINUTES = 30;
+/* ---------------- CONFIG ---------------- */
+const ADMINS = [
+  { username: "hotice", password: "iamyou!123" },
+  { username: "director", password: "Ashok@098" }
+];
 
+const OPEN_HOUR = 6;
+const CLOSE_HOUR = 22;
+
+/* ---------------- DEVICE ID ---------------- */
 const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
 localStorage.setItem("deviceId", deviceId);
-let wrongAttempts = Number(localStorage.getItem("attempts")) || 0;
-let blockedDevices = JSON.parse(localStorage.getItem("blockedDevices")) || [];
 
+let blockedDevices = JSON.parse(localStorage.getItem("blockedDevices")) || [];
+let manualMode = false;
+let forcedStatus = null;
+
+/* ---------------- DARK MODE AUTO ---------------- */
+document.body.classList.add(
+  window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+);
+
+/* ---------------- ELEMENTS ---------------- */
 const statusText = document.getElementById("statusText");
 const statusIcon = document.getElementById("statusIcon");
 const adminPanel = document.getElementById("adminPanel");
 const blockedList = document.getElementById("blockedList");
 
-if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-  document.body.classList.add("dark");
-} else {
-  document.body.classList.add("light");
+/* ---------------- STATUS UPDATE ---------------- */
+function applyStatus(text, color, pulse=false) {
+  statusText.innerText = text;
+  statusIcon.style.color = color;
+  statusIcon.classList.remove("pulse");
+  if (pulse) statusIcon.classList.add("pulse");
 }
 
-let manualOverride = false;  // true when admin manually sets status
-let closedToday = false;
-let forcedStatus = null;      // "open" | "closed" | "closedToday"
-
-/* ------------------- STATUS LOGIC ------------------- */
-function updateStatus() {
+function autoStatus() {
   const now = new Date();
-  const hour = now.getHours();
-  const minutes = now.getMinutes();
+  const h = now.getHours();
 
-  // Reset pulse
-  statusIcon.classList.remove("pulse");
+  if (h >= OPEN_HOUR && h < CLOSE_HOUR) {
+    applyStatus("We are OPEN 🟢", "lime", true);
+  } else {
+    applyStatus("We are CLOSED 🔴", "red");
+  }
+}
 
-  if (manualOverride) {
-    if (forcedStatus === "open") {
-      statusText.innerText = "We are OPEN 🟢";
-      statusIcon.style.color = "green";
-      statusIcon.classList.add("pulse");
-    } else if (forcedStatus === "closed") {
-      statusText.innerText = "We are CLOSED 🔴";
-      statusIcon.style.color = "red";
-    } else if (forcedStatus === "closedToday") {
-      statusText.innerText = "Closed Today ❌";
-      statusIcon.style.color = "red";
+function updateStatus() {
+  if (manualMode) {
+    switch (forcedStatus) {
+      case "open": applyStatus("We are OPEN 🟢", "lime", true); break;
+      case "closed": applyStatus("We are CLOSED 🔴", "red"); break;
+      case "closedToday": applyStatus("Closed Today ❌", "red"); break;
+      case "openingSoon": applyStatus("Opening Soon ⏰", "orange"); break;
+      case "closingSoon": applyStatus("Closing Soon ⚠️", "yellow"); break;
     }
   } else {
-    // Auto logic
-    if (hour < OPEN_HOUR) {
-      statusText.innerText = "Opening Soon ⏰";
-      statusIcon.style.color = "orange";
-    } else if (hour === CLOSE_HOUR && minutes >= 60 - CLOSING_SOON_MINUTES) {
-      statusText.innerText = "Closing Soon ⚠️";
-      statusIcon.style.color = "yellow";
-    } else if (hour >= OPEN_HOUR && hour < CLOSE_HOUR) {
-      statusText.innerText = "We are OPEN 🟢";
-      statusIcon.style.color = "green";
-      statusIcon.classList.add("pulse");
-    } else {
-      statusText.innerText = "We are CLOSED 🔴";
-      statusIcon.style.color = "red";
-    }
+    autoStatus();
   }
-
-  statusIcon.innerText = "🍴";
 }
 
-/* ------------------- ADMIN LOGIN ------------------- */
+/* ---------------- ADMIN LOGIN ---------------- */
 document.getElementById("loginBtn").onclick = () => {
-  if (blockedDevices.includes(deviceId)) {
+  const u = document.getElementById("usernameInput").value;
+  const p = document.getElementById("passwordInput").value;
+
+  if (blockedDevices.find(d => d.deviceId === deviceId)) {
     alert("This device is blocked 🔒");
     return;
   }
 
-  const pin = document.getElementById("pinInput").value;
+  const admin = ADMINS.find(a => a.username === u && a.password === p);
 
-  if (pin === ADMIN_PIN) {
+  if (admin) {
     adminPanel.style.display = "block";
-    wrongAttempts = 0;
-    localStorage.setItem("attempts", 0);
     renderBlocked();
   } else {
-    wrongAttempts++;
-    localStorage.setItem("attempts", wrongAttempts);
-    if (wrongAttempts >= 3) {
-      blockedDevices.push(deviceId);
-      localStorage.setItem("blockedDevices", JSON.stringify(blockedDevices));
-      alert("Device blocked after 3 wrong attempts 🔒");
-    } else {
-      alert(`Wrong PIN (${wrongAttempts}/3)`);
-    }
+    blockedDevices.push({
+      deviceId,
+      username: u || "unknown",
+      time: new Date().toLocaleString()
+    });
+    localStorage.setItem("blockedDevices", JSON.stringify(blockedDevices));
+    alert("Wrong credentials ❌ Device blocked");
   }
 };
 
-/* ------------------- ADMIN CONTROLS ------------------- */
-function setOpen() { manualOverride = true; forcedStatus = "open"; updateStatus(); }
-function setClosed() { manualOverride = true; forcedStatus = "closed"; updateStatus(); }
-function setClosedToday() { manualOverride = true; forcedStatus = "closedToday"; updateStatus(); }
+/* ---------------- ADMIN CONTROLS ---------------- */
+function setStatus(s) {
+  manualMode = true;
+  forcedStatus = s;
+  updateStatus();
+}
 
-/* ------------------- BLOCK LIST ------------------- */
+function resetAuto() {
+  manualMode = false;
+  forcedStatus = null;
+  updateStatus();
+}
+
+/* ---------------- BLOCK LIST ---------------- */
 function renderBlocked() {
   blockedList.innerHTML = "";
-  blockedDevices.forEach(id => {
+  blockedDevices.forEach(d => {
     const li = document.createElement("li");
-    li.innerText = id;
+    li.innerText = `${d.username} | ${d.deviceId.slice(0,8)} | ${d.time}`;
     blockedList.appendChild(li);
   });
 }
 
-function resetBlocks() {
+function clearBlocks() {
   blockedDevices = [];
   localStorage.removeItem("blockedDevices");
-  localStorage.setItem("attempts", 0);
   renderBlocked();
-  alert("All devices unblocked ✅");
 }
 
-/* ------------------- DARK MODE ------------------- */
-function toggleDark() {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-}
-
-/* ------------------- AUTO UPDATE ------------------- */
+/* ---------------- INIT ---------------- */
 updateStatus();
 setInterval(updateStatus, 60000);
