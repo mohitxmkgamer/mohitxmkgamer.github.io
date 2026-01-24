@@ -1,107 +1,108 @@
-const openHour = 10;
-const closeHour = 21;
-const OWNER_PASSWORD = "1234"; // 🔑 change this
+const OWNER_PASSWORD = "1234"; // change this
 
-// Holidays (YYYY-MM-DD)
-const holidays = [
-  "2026-01-26",
-  "2026-03-08"
-];
+// Weekly schedule
+const schedule = {
+  0: null,            // Sunday closed
+  1: [10,21],
+  2: [10,21],
+  3: [10,21],
+  4: [10,21],
+  5: [10,21],
+  6: [10,21]
+};
+
+// Holidays
+const holidays = ["2026-01-26"];
+
+let lang = "en";
 
 const light = document.getElementById("statusLight");
 const text = document.getElementById("statusText");
 const timeText = document.getElementById("timeText");
 const controls = document.getElementById("controls");
 
-function todayDate() {
-  return new Date().toISOString().split("T")[0];
+function formatTime(h){
+  const a = h>=12?"PM":"AM";
+  h = h%12||12;
+  return h+":00 "+a;
 }
 
-function formatTime(h) {
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return h + ":00 " + ampm;
+function login(){
+  const p = document.getElementById("password").value;
+  if(p===OWNER_PASSWORD){
+    controls.style.display="block";
+    document.getElementById("loginBox").style.display="none";
+  } else alert("Wrong password");
 }
 
-function unlockControls() {
-  const pass = prompt("Enter owner password:");
-  if (pass === OWNER_PASSWORD) {
-    controls.style.display = "block";
-    alert("Controls unlocked");
-  } else {
-    alert("Wrong password");
-  }
-}
+function setOpen(){ localStorage.setItem("manual","open"); updateUI(); }
+function setClosed(){ localStorage.setItem("manual","closed"); updateUI(); }
+function setClosedToday(){ localStorage.setItem("manual","today"); updateUI(); }
 
-function setOpen() {
-  localStorage.setItem("manualStatus", "open");
-  updateUI();
-}
-
-function setClosed() {
-  localStorage.setItem("manualStatus", "closed");
-  updateUI();
-}
-
-function setClosedToday() {
-  localStorage.setItem("manualStatus", "closedToday");
-  updateUI();
-}
-
-function toggleDark() {
+function toggleDark(){
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
 }
 
-function updateUI() {
+function toggleLang(){
+  lang = lang==="en"?"hi":"en";
+  updateUI();
+}
+
+function updateUI(){
   const now = new Date();
+  const day = now.getDay();
   const hour = now.getHours();
-  const manualStatus = localStorage.getItem("manualStatus");
-  const today = todayDate();
+  const manual = localStorage.getItem("manual");
+  const today = now.toISOString().split("T")[0];
 
-  if (holidays.includes(today)) {
-    light.style.background = "orange";
-    text.innerText = "HOLIDAY";
-    timeText.innerText = "Shop closed today";
+  if(holidays.includes(today)){
+    setStatus("HOLIDAY","आज बंद है","orange");
     return;
   }
 
-  if (manualStatus === "open") {
-    light.style.background = "green";
-    text.innerText = "SHOP IS OPEN";
-    timeText.innerText = `Open till ${formatTime(closeHour)}`;
+  if(manual==="open"){
+    setStatus("SHOP IS OPEN","दुकान खुली है","green");
     return;
   }
 
-  if (manualStatus === "closedToday") {
-    light.style.background = "orange";
-    text.innerText = "CLOSED TODAY";
-    timeText.innerText = "See you tomorrow";
+  if(manual==="today"){
+    setStatus("CLOSED TODAY","आज बंद है","orange");
     return;
   }
 
-  if (hour >= openHour && hour < closeHour) {
-    light.style.background = "green";
-    text.innerText = "SHOP IS OPEN";
-    timeText.innerText = `Open till ${formatTime(closeHour)}`;
+  const hours = schedule[day];
+  if(!hours){
+    setStatus("SUNDAY CLOSED","रविवार बंद","red");
+    return;
+  }
+
+  if(hour>=hours[0] && hour<hours[1]){
+    setStatus("SHOP IS OPEN","दुकान खुली है","green",hours[1]);
   } else {
-    light.style.background = "red";
-    text.innerText = "SHOP IS CLOSED";
-    timeText.innerText = `Opens at ${formatTime(openHour)}`;
+    setStatus("SHOP IS CLOSED","दुकान बंद है","red",hours[0]);
   }
 }
 
+function setStatus(en,hi,color,time){
+  light.style.background=color;
+  text.innerText = lang==="en"?en:hi;
+  timeText.innerText = time ? 
+    (lang==="en"?"Time: ":"समय: ")+formatTime(time) : "";
+}
+
+// Map
+function changeMap(loc){
+  document.getElementById("map").src =
+  "https://www.google.com/maps?q="+loc+"&output=embed";
+}
+changeMap("Ludhiana+Punjab+India");
+
+// Visitor counter
+let v = localStorage.getItem("visits")||0;
+v++;
+localStorage.setItem("visits",v);
+document.getElementById("visits").innerText =
+  "Visitors: "+v;
+
 updateUI();
-
-<h3>📍 Our Branches</h3>
-
-<select onchange="changeMap(this.value)">
-  <option value="Ludhiana+Punjab+India">Ludhiana</option>
-  <option value="Chandigarh+India">Chandigarh</option>
-</select>
-
-<iframe
-  id="map"
-  class="map"
-  loading="lazy">
-</iframe>
