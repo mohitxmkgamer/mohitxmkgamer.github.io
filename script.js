@@ -1,4 +1,4 @@
-const ADMIN_PIN = "Ashok@098"; // CHANGE THIS
+const ADMIN_PIN = "1234"; // CHANGE THIS
 let isAdmin = false;
 let manualOverride = false;
 let closedToday = false;
@@ -12,32 +12,42 @@ const statusText = document.getElementById("statusText");
 const statusIcon = document.getElementById("statusIcon");
 const adminPanel = document.getElementById("adminPanel");
 const body = document.body;
+const loginBtn = document.getElementById("loginBtn");
+const pinInput = document.getElementById("pinInput");
 
-/* Admin Login */
+/* INITIAL STATUS ON PAGE LOAD */
+document.addEventListener("DOMContentLoaded", () => {
+  checkStatus();
+});
+
+/* ADMIN LOGIN */
+loginBtn.addEventListener("click", loginAdmin);
+
 function loginAdmin() {
   if (blocked) {
     alert("Too many wrong attempts! Admin panel blocked 🔒");
     return;
   }
 
-  const pin = document.getElementById("pinInput").value;
+  const pin = pinInput.value.trim();
   if (pin === ADMIN_PIN) {
     isAdmin = true;
     adminPanel.style.display = "block";
-    wrongAttempts = 0; // reset attempts on success
+    wrongAttempts = 0;
     alert("Admin access granted ✅");
+    pinInput.value = "";
   } else {
     wrongAttempts++;
     alert(`Wrong PIN ❌ (${wrongAttempts}/3)`);
-
     if (wrongAttempts >= 3) {
       blocked = true;
       alert("Admin access blocked due to 3 wrong attempts! 🔒");
     }
+    pinInput.value = "";
   }
 }
 
-/* Only admin actions */
+/* ONLY ADMIN ACTIONS */
 function requireAdmin(action) {
   if (!isAdmin) {
     alert("Admin access required 🔒");
@@ -46,14 +56,14 @@ function requireAdmin(action) {
   action();
 }
 
-/* Reset block */
+/* RESET BLOCKED LOGIN */
 function resetBlock() {
   blocked = false;
   wrongAttempts = 0;
-  alert("Blocked IP/Admin reset ✅");
+  alert("Blocked login reset ✅");
 }
 
-/* Status Controls */
+/* SHOP STATUS CONTROLS */
 function setOpen() {
   manualOverride = true;
   closedToday = false;
@@ -70,31 +80,25 @@ function setClosedToday() {
   manualOverride = true;
   closedToday = true;
   statusText.innerText = "Closed Today ❌";
-  statusIcon.innerText = "🍴"; // Fork & Knife
+  statusIcon.innerText = "🍴";
 }
 
-/* Update Status */
+/* UPDATE STATUS */
 function updateStatus(isOpen) {
-  if (isOpen) {
-    statusText.innerText = "We are OPEN 🟢";
-    statusIcon.innerText = "🍴"; // fork & knife still
-  } else {
-    statusText.innerText = "We are CLOSED 🔴";
-    statusIcon.innerText = "🍴";
-  }
+  statusText.innerText = isOpen ? "We are OPEN 🟢" : "We are CLOSED 🔴";
+  statusIcon.innerText = "🍴";
 }
 
-/* Auto Timing */
-function autoCheck() {
+/* AUTO STATUS BASED ON TIME */
+function checkStatus() {
   if (manualOverride || closedToday) return;
   const hour = new Date().getHours();
-  hour >= OPEN_TIME && hour < CLOSE_TIME ? updateStatus(true) : updateStatus(false);
+  updateStatus(hour >= OPEN_TIME && hour < CLOSE_TIME);
 }
 
-setInterval(autoCheck, 60000);
-autoCheck();
+setInterval(checkStatus, 60000);
 
-/* Dark Mode */
+/* DARK MODE TOGGLE */
 function toggleDark() {
   body.classList.toggle("dark");
   body.classList.toggle("light");
