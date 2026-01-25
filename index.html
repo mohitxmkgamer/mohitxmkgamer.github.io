@@ -24,7 +24,7 @@
       background: #020617;
       box-shadow: 0 0 30px rgba(0,0,0,0.6);
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
     }
 
     h1 {
@@ -34,6 +34,11 @@
     #status {
       font-size: 22px;
       margin: 20px 0;
+    }
+
+    .time {
+      font-size: 14px;
+      opacity: 0.7;
     }
 
     button {
@@ -61,31 +66,14 @@
   <div class="box">
     <h1>🍴 My Shop</h1>
     <div id="status">Checking status…</div>
+    <div class="time">Auto hours: 10:00 – 22:00</div>
 
-    <button class="open" onclick="setStatus('OPEN')">Open</button>
-    <button class="close" onclick="setStatus('CLOSED')">Close</button>
+    <button class="open" onclick="manualSet('OPEN')">Open</button>
+    <button class="close" onclick="manualSet('CLOSED')">Close</button>
   </div>
 
   <script>
-    const statusDiv = document.getElementById("status");
+    const OPEN_HOUR = 10;
+    const CLOSE_HOUR = 22;
 
-    function loadStatus() {
-      const saved = localStorage.getItem("shopStatus");
-      if (saved) {
-        statusDiv.innerText = "Status: " + saved;
-      } else {
-        statusDiv.innerText = "Status: OPEN";
-        localStorage.setItem("shopStatus", "OPEN");
-      }
-    }
-
-    function setStatus(value) {
-      localStorage.setItem("shopStatus", value);
-      statusDiv.innerText = "Status: " + value;
-    }
-
-    loadStatus();
-  </script>
-
-</body>
-</html>
+    const statusDiv = document.getElementById("statu
