@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>My Shop</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -61,20 +60,31 @@
 
   <div class="box">
     <h1>🍴 My Shop</h1>
-    <div id="status">Status: OPEN</div>
+    <div id="status">Checking status…</div>
 
-    <button class="open" onclick="setOpen()">Open</button>
-    <button class="close" onclick="setClosed()">Close</button>
+    <button class="open" onclick="setStatus('OPEN')">Open</button>
+    <button class="close" onclick="setStatus('CLOSED')">Close</button>
   </div>
 
   <script>
-    function setOpen() {
-      document.getElementById("status").innerText = "Status: OPEN";
+    const statusDiv = document.getElementById("status");
+
+    function loadStatus() {
+      const saved = localStorage.getItem("shopStatus");
+      if (saved) {
+        statusDiv.innerText = "Status: " + saved;
+      } else {
+        statusDiv.innerText = "Status: OPEN";
+        localStorage.setItem("shopStatus", "OPEN");
+      }
     }
 
-    function setClosed() {
-      document.getElementById("status").innerText = "Status: CLOSED";
+    function setStatus(value) {
+      localStorage.setItem("shopStatus", value);
+      statusDiv.innerText = "Status: " + value;
     }
+
+    loadStatus();
   </script>
 
 </body>
