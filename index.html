@@ -1,14 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Shop Status</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+  <meta charset="UTF-8">
+  <title>My Shop</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .box {
+      text-align: center;
+      padding: 30px;
+      border-radius: 16px;
+      background: #020617;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #status {
+      font-size: 22px;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 6px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .open {
+      background: #22c55e;
+      color: black;
+    }
+
+    .close {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
-<h1 id="status">Checking status...</h1>
+  <div class="box">
+    <h1>🍴 My Shop</h1>
+    <div id="status">Status: OPEN</div>
 
-<script src="script.js"></script>
+    <button class="open" onclick="setOpen()">Open</button>
+    <button class="close" onclick="setClosed()">Close</button>
+  </div>
+
+  <script>
+    function setOpen() {
+      document.getElementById("status").innerText = "Status: OPEN";
+    }
+
+    function setClosed() {
+      document.getElementById("status").innerText = "Status: CLOSED";
+    }
+  </script>
+
 </body>
 </html>
